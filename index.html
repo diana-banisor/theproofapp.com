@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proof — A Sourdough Companion</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sage: #9ead99;
+    --sage-deep: #7a9a6e;
+    --sage-light: #c8d9c4;
+    --sage-pale: #eaf2e8;
+    --cream: #EDE6D6;
+    --cream-deep: #ddd4c0;
+    --cream-pale: #f7f3ec;
+    --espresso: #2d2416;
+    --bark: #4a3f30;
+    --stone: #9a8f7e;
+    --linen: #faf7f2;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--linen);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--espresso);
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 48px;
+    background: rgba(250,247,242,0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(158,173,153,0.2);
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .nav-logo img {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+  }
+
+  .nav-wordmark {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--espresso);
+    letter-spacing: -0.01em;
+  }
+
+  .nav-cta {
+    background: var(--sage);
+    color: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 9px 20px;
+    border-radius: 99px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.1s;
+    letter-spacing: 0.01em;
+  }
+
+  .nav-cta:hover { background: var(--sage-deep); transform: translateY(-1px); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 120px 48px 80px;
+    background: var(--cream-pale);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -120px;
+    right: -120px;
+    width: 600px;
+    height: 600px;
+    background: var(--sage-pale);
+    border-radius: 50%;
+    opacity: 0.6;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -80px;
+    left: -80px;
+    width: 400px;
+    height: 400px;
+    background: var(--cream);
+    border-radius: 50%;
+    opacity: 0.5;
+  }
+
+  .hero-inner {
+    max-width: 1100px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--sage-deep);
+    margin-bottom: 20px;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(48px, 6vw, 72px);
+    font-weight: 500;
+    line-height: 1.05;
+    color: var(--espresso);
+    letter-spacing: -0.02em;
+    margin-bottom: 24px;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--sage-deep);
+  }
+
+  .hero-body {
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--bark);
+    font-weight: 300;
+    margin-bottom: 40px;
+    max-width: 420px;
+  }
+
+  .hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--sage);
+    color: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 14px 28px;
+    border-radius: 99px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+  }
+
+  .btn-primary:hover { background: var(--sage-deep); transform: translateY(-2px); }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    color: var(--espresso);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    padding: 14px 4px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    border-bottom: 1px solid var(--cream-deep);
+    transition: border-color 0.2s;
+  }
+
+  .btn-secondary:hover { border-color: var(--sage); color: var(--sage-deep); }
+
+  /* PHONE MOCKUP */
+  .hero-visual {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+
+  .phone-wrap {
+    position: relative;
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-12px); }
+  }
+
+  .phone-frame {
+    width: 260px;
+    background: var(--espresso);
+    border-radius: 44px;
+    padding: 10px;
+    box-shadow: 0 40px 80px rgba(45,36,22,0.18), 0 8px 20px rgba(45,36,22,0.08);
+    position: relative;
+  }
+
+  .phone-screen {
+    background: var(--linen);
+    border-radius: 36px;
+    overflow: hidden;
+    padding: 0;
+  }
+
+  .phone-notch-bar {
+    background: var(--espresso);
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .phone-notch-pill {
+    width: 72px;
+    height: 10px;
+    background: #1a1210;
+    border-radius: 99px;
+  }
+
+  .phone-content {
+    padding: 20px 16px;
+    background: var(--linen);
+  }
+
+  .app-header {
+    margin-bottom: 18px;
+  }
+
+  .app-greeting {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    color: var(--stone);
+    margin-bottom: 2px;
+    font-weight: 400;
+  }
+
+  .app-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 500;
+    font-style: italic;
+    color: var(--espresso);
+    letter-spacing: -0.02em;
+  }
+
+  .app-subtitle {
+    font-size: 9px;
+    color: var(--stone);
+    margin-top: 2px;
+  }
+
+  .starter-card {
+    background: var(--sage);
+    border-radius: 16px;
+    padding: 14px;
+    margin-bottom: 10px;
+    color: white;
+  }
+
+  .starter-label {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    opacity: 0.75;
+    margin-bottom: 4px;
+  }
+
+  .starter-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 500;
+    font-style: italic;
+    margin-bottom: 8px;
+  }
+
+  .starter-status {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 9px;
+    opacity: 0.9;
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    background: #c8f5c0;
+    border-radius: 50%;
+  }
+
+  .starter-bar {
+    margin-top: 10px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 99px;
+    height: 4px;
+  }
+
+  .starter-fill {
+    width: 72%;
+    height: 100%;
+    background: white;
+    border-radius: 99px;
+  }
+
+  .nav-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .nav-row {
+    background: white;
+    border-radius: 12px;
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 0.5px solid rgba(158,173,153,0.2);
+  }
+
+  .nav-icon {
+    width: 30px;
+    height: 30px;
+    background: var(--sage-pale);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+
+  .nav-text-group { flex: 1; min-width: 0; }
+
+  .nav-title {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--espresso);
+  }
+
+  .nav-sub {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 8px;
+    color: var(--stone);
+    margin-top: 1px;
+  }
+
+  .nav-chevron { font-size: 10px; color: var(--stone); }
+
+  .phone-home-bar {
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--linen);
+  }
+
+  .home-ind {
+    width: 72px;
+    height: 4px;
+    background: var(--cream-deep);
+    border-radius: 99px;
+  }
+
+  /* FEATURES */
+  .features {
+    padding: 100px 48px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--sage-deep);
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 500;
+    color: var(--espresso);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 60px;
+    max-width: 500px;
+  }
+
+  .section-title em { font-style: italic; color: var(--sage-deep); }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+
+  .feature-card {
+    background: white;
+    border-radius: 20px;
+    padding: 32px 28px;
+    border: 1px solid rgba(158,173,153,0.15);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px rgba(45,36,22,0.07);
+  }
+
+  .feature-icon {
+    width: 48px;
+    height: 48px;
+    background: var(--sage-pale);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    font-size: 22px;
+  }
+
+  .feature-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--espresso);
+    margin-bottom: 10px;
+    letter-spacing: -0.01em;
+  }
+
+  .feature-body {
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--bark);
+    font-weight: 300;
+  }
+
+  /* FOR EVERYONE */
+  .for-everyone {
+    background: var(--cream);
+    padding: 100px 48px;
+  }
+
+  .for-everyone-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .audience-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 40px;
+  }
+
+  .audience-item {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .audience-num {
+    width: 32px;
+    height: 32px;
+    background: var(--sage);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 500;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .audience-text-group {}
+  .audience-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--espresso);
+    margin-bottom: 4px;
+  }
+  .audience-desc {
+    font-size: 13px;
+    color: var(--bark);
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  .for-everyone-visual {
+    display: flex;
+    justify-content: center;
+  }
+
+  .icon-showcase {
+    position: relative;
+    width: 260px;
+    height: 260px;
+  }
+
+  .icon-main {
+    width: 180px;
+    height: 180px;
+    border-radius: 40px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 24px 60px rgba(45,36,22,0.15);
+    overflow: hidden;
+  }
+
+  .icon-main img { width: 100%; height: 100%; object-fit: cover; }
+
+  .icon-bubble {
+    position: absolute;
+    background: white;
+    border-radius: 14px;
+    padding: 10px 14px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--espresso);
+    box-shadow: 0 8px 24px rgba(45,36,22,0.1);
+    white-space: nowrap;
+    border: 1px solid rgba(158,173,153,0.2);
+  }
+
+  .icon-bubble-1 { top: 8px; right: 0; }
+  .icon-bubble-2 { bottom: 20px; left: 0; }
+
+  .bubble-sub {
+    font-size: 9px;
+    color: var(--stone);
+    font-weight: 400;
+    margin-top: 1px;
+  }
+
+  /* COMING SOON */
+  .coming-soon {
+    padding: 100px 48px;
+    text-align: center;
+    background: var(--sage);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .coming-soon::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    right: -100px;
+    width: 500px;
+    height: 500px;
+    background: rgba(255,255,255,0.07);
+    border-radius: 50%;
+  }
+
+  .coming-soon::after {
+    content: '';
+    position: absolute;
+    bottom: -80px;
+    left: -60px;
+    width: 350px;
+    height: 350px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 50%;
+  }
+
+  .coming-soon-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  .coming-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(237,230,214,0.7);
+    margin-bottom: 20px;
+  }
+
+  .coming-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 500;
+    color: var(--cream);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 20px;
+  }
+
+  .coming-title em { font-style: italic; }
+
+  .coming-body {
+    font-size: 16px;
+    color: rgba(237,230,214,0.8);
+    font-weight: 300;
+    line-height: 1.65;
+    margin-bottom: 40px;
+  }
+
+  .app-store-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--cream);
+    color: var(--espresso);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 14px 28px;
+    border-radius: 14px;
+    border: none;
+    cursor: not-allowed;
+    text-decoration: none;
+    opacity: 0.85;
+  }
+
+  .app-store-btn-inner { text-align: left; }
+  .app-store-sub { font-size: 10px; font-weight: 400; color: var(--bark); display: block; }
+  .app-store-main { font-size: 16px; font-weight: 500; display: block; }
+
+  /* FOOTER */
+  footer {
+    padding: 40px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid rgba(158,173,153,0.2);
+    background: var(--linen);
+  }
+
+  .footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .footer-logo img { width: 24px; height: 24px; border-radius: 6px; }
+
+  .footer-wordmark {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--espresso);
+  }
+
+  .footer-copy {
+    font-size: 12px;
+    color: var(--stone);
+    font-weight: 300;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 860px) {
+    nav { padding: 16px 24px; }
+    .hero { padding: 100px 24px 60px; }
+    .hero-inner { grid-template-columns: 1fr; gap: 48px; text-align: center; }
+    .hero-body { max-width: 100%; }
+    .hero-actions { justify-content: center; }
+    .hero-visual { order: -1; }
+    .features { padding: 60px 24px; }
+    .features-grid { grid-template-columns: 1fr; gap: 16px; }
+    .for-everyone { padding: 60px 24px; }
+    .for-everyone-inner { grid-template-columns: 1fr; gap: 40px; }
+    .coming-soon { padding: 60px 24px; }
+    footer { flex-direction: column; gap: 12px; text-align: center; padding: 32px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    <img src="proof-icon.png" alt="Proof app icon">
+    <span class="nav-wordmark">Proof</span>
+  </div>
+  <a href="#coming-soon" class="nav-cta">Coming Soon</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-text">
+      <div class="hero-label">Sourdough, simplified</div>
+      <h1 class="hero-title">Your bread,<br><em>beautifully</em><br>managed.</h1>
+      <p class="hero-body">Proof is the sourdough companion for every baker — whether you're nurturing your first starter or perfecting your hundredth loaf.</p>
+      <div class="hero-actions">
+        <a href="#coming-soon" class="btn-primary">Coming to iOS →</a>
+        <a href="#features" class="btn-secondary">See what's inside</a>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="phone-wrap">
+        <div class="phone-frame">
+          <div class="phone-screen">
+            <div class="phone-notch-bar">
+              <div class="phone-notch-pill"></div>
+            </div>
+            <div class="phone-content">
+              <div class="app-header">
+                <div class="app-greeting">Good morning</div>
+                <div class="app-title">Proof</div>
+                <div class="app-subtitle">Saturday · your starter is ready</div>
+              </div>
+              <div class="starter-card">
+                <div class="starter-label">Active Starter</div>
+                <div class="starter-name">Rosie</div>
+                <div class="starter-status">
+                  <div class="status-dot"></div>
+                  Peak activity · ready to bake
+                </div>
+                <div class="starter-bar">
+                  <div class="starter-fill"></div>
+                </div>
+              </div>
+              <div class="nav-rows">
+                <div class="nav-row">
+                  <div class="nav-icon">🌾</div>
+                  <div class="nav-text-group">
+                    <div class="nav-title">Bake Planner</div>
+                    <div class="nav-sub">Build your full timeline</div>
+                  </div>
+                  <div class="nav-chevron">›</div>
+                </div>
+                <div class="nav-row">
+                  <div class="nav-icon">💧</div>
+                  <div class="nav-text-group">
+                    <div class="nav-title">Hydration Calculator</div>
+                    <div class="nav-sub">Find your perfect ratio</div>
+                  </div>
+                  <div class="nav-chevron">›</div>
+                </div>
+                <div class="nav-row">
+                  <div class="nav-icon">📋</div>
+                  <div class="nav-text-group">
+                    <div class="nav-title">My Loaves</div>
+                    <div class="nav-sub">6 bakes logged</div>
+                  </div>
+                  <div class="nav-chevron">›</div>
+                </div>
+              </div>
+            </div>
+            <div class="phone-home-bar"><div class="home-ind"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="section-label">Features</div>
+  <h2 class="section-title">Everything your<br><em>starter needs.</em></h2>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">🌾</div>
+      <div class="feature-title">Starter Tracker</div>
+      <p class="feature-body">Monitor your starter's health, feeding schedule, and activity levels in one glance. Never miss a peak moment again.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📅</div>
+      <div class="feature-title">Bake Planner</div>
+      <p class="feature-body">Plan your bake from levain to oven. Build a full timeline around your schedule so the dough works around your life.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💧</div>
+      <div class="feature-title">Hydration Calculator</div>
+      <p class="feature-body">Dial in your flour-to-water ratio with ease. Understand how hydration affects your final crumb structure.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📸</div>
+      <div class="feature-title">Loaf Journal</div>
+      <p class="feature-body">Log every bake with photos, notes, and scores. Watch yourself improve loaf by loaf over time.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔬</div>
+      <div class="feature-title">Dough Analyzer</div>
+      <p class="feature-body">AI-powered fermentation reading to help you understand what your dough is telling you — even when it whispers.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🌡️</div>
+      <div class="feature-title">Environment Tracking</div>
+      <p class="feature-body">Temperature and humidity affect fermentation. Proof helps you account for your kitchen's conditions every time.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOR EVERYONE -->
+<section class="for-everyone">
+  <div class="for-everyone-inner">
+    <div>
+      <div class="section-label">For every baker</div>
+      <h2 class="section-title">Beginner or<br><em>seasoned pro.</em></h2>
+      <div class="audience-list">
+        <div class="audience-item">
+          <div class="audience-num">1</div>
+          <div class="audience-text-group">
+            <div class="audience-title">Just starting out</div>
+            <p class="audience-desc">Proof guides you step by step so your first loaf feels achievable, not overwhelming.</p>
+          </div>
+        </div>
+        <div class="audience-item">
+          <div class="audience-num">2</div>
+          <div class="audience-text-group">
+            <div class="audience-title">Getting consistent</div>
+            <p class="audience-desc">Track your variables, identify patterns, and start producing reliable results.</p>
+          </div>
+        </div>
+        <div class="audience-item">
+          <div class="audience-num">3</div>
+          <div class="audience-text-group">
+            <div class="audience-title">Chasing the perfect loaf</div>
+            <p class="audience-desc">Dig into fermentation data and fine-tune every detail of your process.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="for-everyone-visual">
+      <div class="icon-showcase">
+        <div class="icon-main">
+          <img src="proof-icon.png" alt="Proof app icon">
+        </div>
+        <div class="icon-bubble icon-bubble-1">
+          <div>Rosie peaked 🌱</div>
+          <div class="bubble-sub">Ready to bake now</div>
+        </div>
+        <div class="icon-bubble icon-bubble-2">
+          <div>Bake #14 logged</div>
+          <div class="bubble-sub">Open crumb · great crust</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMING SOON -->
+<section class="coming-soon" id="coming-soon">
+  <div class="coming-soon-inner">
+    <div class="coming-label">iOS App</div>
+    <h2 class="coming-title"><em>Proof</em> is coming<br>to the App Store.</h2>
+    <p class="coming-body">We're putting the finishing touches on Proof. It'll be available on iOS for bakers of every level — free to try, beautiful to use.</p>
+    <a class="app-store-btn">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <path d="M20.5 14.8c0-3.2 2.6-4.7 2.7-4.8-1.5-2.1-3.7-2.4-4.5-2.5-1.9-.2-3.8 1.1-4.7 1.1-.9 0-2.4-1.1-3.9-1.1-2 0-3.9 1.2-4.9 3-2.1 3.6-.5 9 1.5 12 1 1.4 2.1 3 3.7 3 1.4-.1 2-.9 3.7-.9 1.7 0 2.2.9 3.8.9 1.6 0 2.6-1.5 3.6-2.9.5-.7.9-1.5 1.2-2.3-2.9-1.2-3.2-4.5-3.2-5.5z" fill="#2d2416"/>
+        <path d="M17.5 5.5c.8-1 1.4-2.4 1.2-3.8-1.2.1-2.6.8-3.5 1.8-.8.9-1.5 2.3-1.3 3.7 1.3.1 2.7-.7 3.6-1.7z" fill="#2d2416"/>
+      </svg>
+      <div class="app-store-btn-inner">
+        <span class="app-store-sub">Coming soon to the</span>
+        <span class="app-store-main">App Store</span>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">
+    <img src="proof-icon.png" alt="Proof icon">
+    <span class="footer-wordmark">Proof</span>
+  </div>
+  <div class="footer-copy">© 2026 Proof. Made for bakers, by a baker.</div>
+</footer>
+
+</body>
+</html>
